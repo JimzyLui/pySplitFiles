@@ -13,6 +13,7 @@ The first line read from 'filename' is a header line that is copied to every out
 def split_txt(filename, pattern, maxlines):
   txtPartial = None
   filecount=1
+  totalLines = getFileLineCount(filename)-1 # -1 for header
   with open(filename,'r') as txt:
     headingRow = txt.readline()
     for index, line in enumerate(txt):
@@ -22,8 +23,12 @@ def split_txt(filename, pattern, maxlines):
         # newfile = pattern.format(index)
         newfile = pattern.format(filecount)
         filecount = filecount +1
-        txtPartial = open(newfile, "w")
+        txtPartial = open(newfile, "w+")
         txtPartial.write(headingRow)
+      elif (index % maxlines ==maxlines-1) or (index == totalLines -1):
+        print('replace....', index, maxlines, totalLines)
+        line = replaceLast(line,',',';',1)
+        print(line)
       txtPartial.write(line)
     if txtPartial:
       txtPartial.close()
@@ -31,8 +36,19 @@ def split_txt(filename, pattern, maxlines):
 def generateNewFilePattern(inputFilepath):
   filename_w_ext = os.path.basename(inputFilepath)
   filebasename, file_extension = os.path.splitext(filename_w_ext)
-  pattern = filebasename+'_part_{0:03d}'+'.'+file_extension
+  pattern = filebasename+'_part_{0:03d}'+file_extension
   return pattern
+
+''' replaces the last occurance of a value'''
+def replaceLast(haystack, needle, newNeedle, occurance):
+  list = haystack.rsplit(needle, occurance)
+  return newNeedle.join(list)
+
+def getFileLineCount(fname):
+  with open(fname) as f:
+    for i, l in enumerate(f):
+      pass
+  return i + 1
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
