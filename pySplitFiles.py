@@ -10,14 +10,14 @@ The first line read from 'filename' is a header line that is copied to every out
 
 """
 
-def split_txt(filename, pattern, maxlines):
+def split_txt(txtFileName, pattern, maxlinesPerFile):
   txtPartial = None
   filecount=1
-  totalLines = getFileLineCount(filename)-1 # -1 for header
-  with open(filename,'r') as txt:
+  totalLines = getFileLineCount(txtFileName)-1 # -1 for header
+  with open(txtFileName,'r') as txt:
     headingRow = txt.readline()
     for index, line in enumerate(txt):
-      if index % maxlines == 0:
+      if index % maxlinesPerFile == 0:
         if txtPartial:
           txtPartial.close()
         # newfile = pattern.format(index)
@@ -25,8 +25,8 @@ def split_txt(filename, pattern, maxlines):
         filecount = filecount +1
         txtPartial = open(newfile, "w+")
         txtPartial.write(headingRow)
-      elif (index % maxlines ==maxlines-1) or (index == totalLines -1):
-        print('replace....', index, maxlines, totalLines)
+      elif (index % maxlinesPerFile ==maxlinesPerFile-1) or (index == totalLines -1):
+        print('replace....', index, maxlinesPerFile, totalLines)
         line = replaceLast(line,',',';',1)
         print(line)
       txtPartial.write(line)
@@ -56,13 +56,13 @@ if __name__ == '__main__':
     description='Splits csv files into smaller ones with headings'
   )
 
-  parser.add_argument("csvfilename", help="the name of the csv file to be split up")
+  parser.add_argument("txtFileName", help="the name of the csv file to be split up")
 
-  parser.add_argument("maxlines", action='store', type=int, default=5, help="the max number of lines in each new file")
+  parser.add_argument("maxlinesPerFile", action='store', type=int, default=5, help="the max number of lines in each new file")
 
   args = parser.parse_args()
 
-  namingPattern = generateNewFilePattern(args.csvfilename)
+  namingPattern = generateNewFilePattern(args.txtFileName)
   # split_file('data.csv', 'part_{0:03d}.txt', 15)
-  # split_txt(args.csvfilename, 'part_{0:03d}.txt', args.maxlines)
-  split_txt(args.csvfilename, namingPattern, args.maxlines)
+  # split_txt(args.txtFileName, 'part_{0:03d}.txt', args.maxlinesPerFile)
+  split_txt(args.txtFileName, namingPattern, args.maxlinesPerFile)

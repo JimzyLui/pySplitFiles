@@ -2,7 +2,7 @@
 
 import argparse
 import os
-import re 
+import re
 
 """
 Split a file into multiple output files.
@@ -111,12 +111,12 @@ if __name__ == '__main__':
     description='Makes a CSV file with a header row into an sql insert statement'
   )
 
-  parser.add_argument("csvfilename", help="the name of the csv file to be split up")
+  parser.add_argument("pipeDelimitedFileName", help="the name of the csv file to be split up")
 
-  parser.add_argument("tablename", help="the name of the table for the resulting query")
+  parser.add_argument("insertTableName", help="the name of the table for the resulting query")
 
   args = parser.parse_args()
 
-  sqlFileName = generateSqlFileName(args.csvfilename)
+  sqlFileName = generateSqlFileName(args.pipeDelimitedFileName)
 
-  convertCsvToSql(args.csvfilename, sqlFileName, args.tablename)
+  convertCsvToSql(args.pipeDelimitedFileName, sqlFileName, args.insertTableName)
